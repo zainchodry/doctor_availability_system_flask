@@ -7,7 +7,7 @@ from app.forms import *
 
 auth_bp = Blueprint('auth', __name__)
 
-@auth_bp.route('/register', methods = ['GET', 'POST'])
+@auth_bp.route('/', methods = ['GET', 'POST'])
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -30,19 +30,30 @@ def register():
         return redirect(url_for('auth.login'))
     return render_template('register.html', form = form)
 
-@auth_bp.route('/login', methods = ['GET', 'POST'])
+@auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
+
         if user and check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
-            flash('Logged in successfully.')
-            return redirect(url_for('main.dashboard'))
-        else:
-            flash('Invalid email or password')
-            return redirect(url_for('auth.login'))
-    return render_template('login.html', form = form)
+            flash('Logged in successfully.', 'success')
+
+            if user.role == 'admin':
+                return redirect(url_for('admin.dashboard'))
+            elif user.role == 'doctor':
+                return redirect(url_for('doctor.dashboard'))
+            elif user.role == 'patient':
+                return redirect(url_for('patient.dashboard'))
+            else:
+                return redirect(url_for('auth.login'))
+
+        flash('Invalid email or password', 'error')
+
+    return render_template('login.html', form=form)
+
 
 
 @auth_bp.route('/logout')

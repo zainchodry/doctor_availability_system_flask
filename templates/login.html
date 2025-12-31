@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock title %}
+
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #74ebd5, #9face6);
+    }
+
+    .auth-card {
+        background: #ffffff;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        animation: fadeIn 0.7s ease-in-out;
+    }
+
+    .auth-title {
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+        color: #0d6efd;
+    }
+
+    .form-control {
+        border-radius: 10px;
+    }
+
+    .btn-custom {
+        width: 100%;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="auth-card">
+                <h3 class="auth-title">Login</h3>
+
+                <form method="post">
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-3">
+                        {{ form.email.label(class="form-label") }}
+                        {{ form.email(class="form-control", placeholder="Enter your email") }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.password.label(class="form-label") }}
+                        {{ form.password(class="form-control", placeholder="Enter your password") }}
+                    </div>
+
+                    {% if form.remember %}
+                    <div class="form-check mb-3">
+                        {{ form.remember(class="form-check-input") }}
+                        {{ form.remember.label(class="form-check-label") }}
+                    </div>
+                    {% endif %}
+
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary btn-custom") }}
+                    </div>
+
+                    <p class="text-center mt-3">
+                        Don't have an account?
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-warning btn-sm">
+                            Register
+                        </a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
